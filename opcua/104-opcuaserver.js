@@ -512,14 +512,9 @@ module.exports = function (RED) {
 
                 case "addFolder":
                     verbose_warn("adding Folder ".concat(msg.topic)); // Example topic format ns=4;s=FolderName
-                    var parentFolder = addressSpace.rootFolder.objects;
-                    if (folder != null) {
-                        parentFolder = folder; // Use previous folder as parent or setFolder() can be use to set parent
-                    }
-                    folder = addressSpace.getOwnNamespace().addObject({
-                        organizedBy: addressSpace.findNode(parentFolder.nodeId),
-                        nodeId: msg.topic,
-                        browseName: msg.topic.substring(7)
+                    msg.payload.device = addressSpace.getOwnNamespace().addObject({
+                        organizedBy: addressSpace.rootFolder.objects,
+                        browseName: msg.payload.browseName
                     });
                     break;
 
@@ -629,7 +624,7 @@ module.exports = function (RED) {
                 default:
                     node_error("unknown OPC UA Command");
             }
-
+            return msg;
         }
 
         function restart_server() {
